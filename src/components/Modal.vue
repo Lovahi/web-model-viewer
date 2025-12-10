@@ -1,6 +1,6 @@
 <template>
   <Transition name="fade">
-    <div v-if="visible" class="modal-overlay">
+    <div v-if="visible" class="modal-overlay" :class="{ interactive: interactive, error: error }">
       <div class="modal-card">
         <slot></slot>
       </div>
@@ -11,23 +11,22 @@
 <script setup lang="ts">
 defineProps<{
   visible: boolean
+  interactive?: boolean
+  error?: boolean
 }>()
 </script>
 
 <style scoped>
 .modal-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.75); /* más limpio que el blur */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 50;
-  backdrop-filter: blur(4px);
-  pointer-events: none;
 }
 
 .modal-card {
@@ -47,7 +46,13 @@ defineProps<{
   transition: transform 0.3s ease;
 }
 
-/* Transitions */
+/* Estado de error */
+.modal-overlay.error .modal-card {
+  border-color: #ef4444;
+  background-color: #1f1f1f;
+}
+
+/* Animaciones */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;
